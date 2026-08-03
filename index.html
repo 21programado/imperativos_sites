@@ -8,14 +8,21 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex justify-center items-center p-4">
 
-  <main class="w-full max-w-md bg-slate-800 rounded-xl shadow-xl p-6 text-center border border-slate-700">
-    <h2 class="text-xl font-bold text-amber-400 mb-4">Con Su Palabra Hoy</h2>
+  <main class="w-full max-w-md bg-slate-800 rounded-xl shadow-xl p-6 text-center border border-slate-700 flex flex-col justify-between">
+    <div>
+      <h2 class="text-xl font-bold text-amber-400 mb-4">Con Su Palabra Hoy</h2>
 
-    <!-- Contenedor del Versículo (Sin botones) -->
-    <div id="contenedorVersiculo" class="bg-slate-900/60 p-6 rounded-lg border border-slate-700/80 min-h-[140px] flex flex-col justify-center items-center">
-      <p id="textoVerso" class="text-base italic text-slate-200 mb-3 leading-relaxed">Cargando...</p>
-      <span id="pasajeVerso" class="text-xs font-semibold text-amber-400"></span>
+      <!-- Contenedor del Versículo -->
+      <div id="contenedorVersiculo" class="bg-slate-900/60 p-6 rounded-lg border border-slate-700/80 min-h-[140px] flex flex-col justify-center items-center">
+        <p id="textoVerso" class="text-base italic text-slate-200 mb-3 leading-relaxed">Cargando...</p>
+        <span id="pasajeVerso" class="text-xs font-semibold text-amber-400"></span>
+      </div>
     </div>
+
+    <!-- Pie de página con el permiso de cita -->
+    <footer class="mt-5 pt-3 border-t border-slate-700/50 text-[10px] text-slate-400 leading-tight">
+      Citado de la Biblia Textual 3º Edición con autorización de la Sociedad Bíblica Iberoamericana.
+    </footer>
   </main>
 
   <script>
@@ -30,15 +37,14 @@
         const versiculos = await respuesta.json();
 
         if (versiculos.length > 0) {
-          // 1. Obtener el día actual del año (ejemplo: día 1 al 365)
+          // 1. Obtener el día actual del año (1 al 365)
           const hoy = new Date();
           const inicioAno = new Date(hoy.getFullYear(), 0, 0);
           const diferenciaMs = hoy - inicioAno;
           const unDiaMs = 1000 * 60 * 60 * 24;
           const diaDelAno = Math.floor(diferenciaMs / unDiaMs);
 
-          // 2. Seleccionar el versículo según el día del año
-          // Usamos el operador módulo (%) para que rote ciclícamente si hay menos versículos que días
+          // 2. Seleccionar versículo según el día
           const indiceHoy = diaDelAno % versiculos.length;
           const versiculoHoy = versiculos[indiceHoy];
 
