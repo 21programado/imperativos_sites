@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Versículo del Día</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex justify-center items-center p-4">
+
+  <main class="w-full max-w-md bg-slate-800 rounded-xl shadow-xl p-6 space-y-5 text-center border border-slate-700">
+    <h2 class="text-xl font-bold text-amber-400">📖 Versículo del Día</h2>
+
+    <!-- Contenedor del Versículo -->
+    <div id="contenedorVersiculo" class="bg-slate-900/60 p-5 rounded-lg border border-slate-700/80 min-h-[130px] flex flex-col justify-center items-center">
+      <p id="textoVerso" class="text-base italic text-slate-200 mb-2">Cargando versículos...</p>
+      <span id="pasajeVerso" class="text-xs font-semibold text-amber-400"></span>
+    </div>
+
+    <!-- Navegación -->
+    <div class="flex justify-between items-center gap-3">
+      <button id="btnAnterior" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-2 px-3 rounded-lg text-sm transition-colors disabled:opacity-50">
+        ⬅️ Anterior
+      </button>
+      <button id="btnSiguiente" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-3 rounded-lg text-sm transition-colors disabled:opacity-50">
+        Siguiente ➡️
+      </button>
+    </div>
+  </main>
+
+  <script>
+    let versiculos = [];
+    let indiceActual = 0;
+
+    const textoVerso = document.getElementById('textoVerso');
+    const pasajeVerso = document.getElementById('pasajeVerso');
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+
+    // Cargar los datos desde el archivo JSON local
+    async function cargarVersiculos() {
+      try {
+        const respuesta = await fetch('./versiculos.json');
+        if (!respuesta.ok) throw new Error('Error al cargar JSON');
+        
+        versiculos = await respuesta.json();
+
+        if (versiculos.length > 0) {
+          // Opcional: Mostrar un versículo basado en el día actual para que cambie a diario automáticamente
+          const hoy = new Date();
+          const diaDelAno = Math.floor((hoy - new Date(hoy.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+          indiceActual = diaDelAno % versiculos.length;
+
+          mostrarVersiculo(indiceActual);
+        } else {
+          textoVerso.textContent = "No hay versículos disponibles.";
+        }
+      } catch (error) {
+        console.error(error);
+        textoVerso.textContent = "Error al cargar la lista de versículos.";
+      }
+    }
+
+    function mostrarVersiculo(index) {
+      if (versiculos.length === 0) return;
+      textoVerso.textContent = versiculos[index].texto;
+      pasajeVerso.textContent = versiculos[index].pasaje;
+    }
+
+    btnAnterior.addEventListener('click', () => {
+      if (versiculos.length === 0) return;
+      indiceActual = (indiceActual - 1 + versiculos.length) % versiculos.length;
+      mostrarVersiculo(indiceActual);
+    });
+
+    btnSiguiente.addEventListener('click', () => {
+      if (versiculos.length === 0) return;
+      indiceActual = (indiceActual + 1) % versiculos.length;
+      mostrarVersiculo(indiceActual);
+    });
+
+    // Iniciar carga al abrir la página
+    cargarVersiculos();
+  </script>
+</body>
+</html>
